@@ -38,6 +38,10 @@ class Converter
         self::LIBRARY               => 'vendor/magento/framework/'
     ];
 
+    protected $skipConversion =[
+        self::MODULE                => [ 'app/code/Magento/SupportDebugger']
+    ];
+
     protected $options;
 
     public function __construct($params = [])
@@ -103,6 +107,19 @@ HELP_TEXT;
         return '-' . strtolower($value[0]);
     }
 
+    public function shouldSkipConversion($type, $matches)
+    {
+         if (array_key_exists($type, $this->skipConversion)) {
+            foreach($this->skipConversion[$type] as $path) {
+                $escapedPath = addcslashes($path, '/');
+                if(preg_match_all('/' . $escapedPath . '/', $matches[0]))
+                    return true;
+            }
+         }
+
+         return false;
+    }
+
     public function g2c(&$content)
     {
         foreach ($this->nonComposerPath as $type => $path) {
@@ -120,6 +137,9 @@ HELP_TEXT;
             $content = preg_replace_callback(
                 '~(^diff --git\s+(?:a\/)?)' . $escapedPath . '([-\w]+\/)?([^\s]+\s+(?:b\/)?)' . $escapedPath . '([-\w]+\/)?([^\s]+)$~m',
                 function ($matches) use ($type, $needProcess) {
+                    if ($this->shouldSkipConversion($type, $matches)) {
+                        return $matches[0];
+                    }
                     return $matches[1] . $this->composerPath[$type]
                         . ($needProcess ? $this->camelCaseToDashedString($matches[2]) : $matches[2])
                         . $matches[3] . $this->composerPath[$type]
@@ -134,6 +154,9 @@ HELP_TEXT;
             $content = preg_replace_callback(
                 '~(^(?:---|\+\+\+|Index:)\s+(?:a\/|b\/)?)' . $escapedPath . '([-\w]+)~m',
                 function ($matches) use ($type, $needProcess) {
+                    if ($this->shouldSkipConversion($type, $matches)) {
+                        return $matches[0];
+                    }
                     return $matches[1] . $this->composerPath[$type]
                         . ($needProcess ? $this->camelCaseToDashedString($matches[2]) : $matches[2]);
                 },
@@ -145,6 +168,9 @@ HELP_TEXT;
             $content = preg_replace_callback (
                 '~(^rename\s+(?:from|to)\s+)' . $escapedPath . '([-\w]+)~m',
                 function ($matches) use ($type, $needProcess) {
+                    if ($this->shouldSkipConversion($type, $matches)) {
+                        return $matches[0];
+                    }
                     return $matches[1] . $this->composerPath[$type]
                         . ($needProcess ? $this->camelCaseToDashedString($matches[2]) : $matches[2]);
                 },
