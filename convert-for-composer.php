@@ -40,7 +40,6 @@ class Converter
 
     protected $skipConversion =[
         self::MODULE                => [ 'app/code/Magento/SupportDebugger']
-
     ];
 
     protected $options;
