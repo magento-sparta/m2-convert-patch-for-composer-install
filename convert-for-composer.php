@@ -99,13 +99,13 @@ HELP_TEXT;
 
     public function camelCaseToDashedString($value)
     {
-        return trim(preg_replace_callback('/((?:^|[A-Z])[a-z]+)([0-9])/', [$this, 'splitCamelCaseByDashes'], $value), '-');
+        return trim(preg_replace_callback('/((?:^|[A-Z])[a-z]+)|([\d])/', [$this, 'splitCamelCaseByDashes'], $value), '-');
     }
 
     public function splitCamelCaseByDashes($value)
     {
         if (!empty($value[2])) {
-            return '-' . strtolower($value[1]) . '-' . $value[2];
+            return '-' . strtolower($value[1]) . $value[2];
         }
 
         return '-' . strtolower($value[0]);
