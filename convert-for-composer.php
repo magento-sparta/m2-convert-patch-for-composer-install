@@ -11,7 +11,7 @@ class Converter
     const MODULE                = 'Module';
     const ADMINHTML_DESIGN      = 'AdminhtmlDesign';
     const FRONTEND_DESIGN       = 'FrontendDesign';
-    const LIBRARY_AMPQ          = 'LibraryAmpq';
+    const LIBRARY_AMQP          = 'LibraryAmqp';
     const LIBRARY_BULK          = 'LibraryBulk';
     const LIBRARY_FOREIGN_KEY   = 'LibraryForeignKey';
     const LIBRARY_MESSAGE_QUEUE = 'LibraryMessageQueue';
@@ -21,7 +21,7 @@ class Converter
         self::MODULE                => 'app/code/Magento/',
         self::ADMINHTML_DESIGN      => 'app/design/adminhtml/Magento/',
         self::FRONTEND_DESIGN       => 'app/design/frontend/Magento/',
-        self::LIBRARY_AMPQ          => 'lib/internal/Magento/Framework/Amqp/',
+        self::LIBRARY_AMQP          => 'lib/internal/Magento/Framework/Amqp/',
         self::LIBRARY_BULK          => 'lib/internal/Magento/Framework/Bulk/',
         self::LIBRARY_FOREIGN_KEY   => 'lib/internal/Magento/Framework/ForeignKey/',
         self::LIBRARY_MESSAGE_QUEUE => 'lib/internal/Magento/Framework/MessageQueue/',
@@ -31,7 +31,7 @@ class Converter
         self::MODULE                => 'vendor/magento/module-',
         self::ADMINHTML_DESIGN      => 'vendor/magento/theme-adminhtml-',
         self::FRONTEND_DESIGN       => 'vendor/magento/theme-frontend-',
-        self::LIBRARY_AMPQ          => 'vendor/magento/framework-ampq/',
+        self::LIBRARY_AMQP          => 'vendor/magento/framework-amqp/',
         self::LIBRARY_BULK          => 'vendor/magento/framework-bulk/',
         self::LIBRARY_FOREIGN_KEY   => 'vendor/magento/framework-foreign-key/',
         self::LIBRARY_MESSAGE_QUEUE => 'vendor/magento/framework-message-queue/',
