@@ -9,6 +9,7 @@
 class Converter
 {
     const MODULE                = 'Module';
+    const INVENTORY             = 'Inventory';
     const ADMINHTML_DESIGN      = 'AdminhtmlDesign';
     const FRONTEND_DESIGN       = 'FrontendDesign';
     const LIBRARY_AMQP          = 'LibraryAmqp';
@@ -19,6 +20,7 @@ class Converter
 
     protected $nonComposerPath  = [
         self::MODULE                => 'app/code/Magento/',
+        self::INVENTORY             => 'Inventory',
         self::ADMINHTML_DESIGN      => 'app/design/adminhtml/Magento/',
         self::FRONTEND_DESIGN       => 'app/design/frontend/Magento/',
         self::LIBRARY_AMQP          => 'lib/internal/Magento/Framework/Amqp/',
@@ -29,6 +31,7 @@ class Converter
     ];
     protected $composerPath     = [
         self::MODULE                => 'vendor/magento/module-',
+        self::INVENTORY             => 'vendor/magento/module-inventory-',
         self::ADMINHTML_DESIGN      => 'vendor/magento/theme-adminhtml-',
         self::FRONTEND_DESIGN       => 'vendor/magento/theme-frontend-',
         self::LIBRARY_AMQP          => 'vendor/magento/framework-amqp/',
@@ -128,7 +131,7 @@ HELP_TEXT;
     {
         foreach ($this->nonComposerPath as $type => $path) {
             $escapedPath = addcslashes($path, '/');
-            $needProcess = in_array($type, [self::MODULE, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
+            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
 
             /**
              * Example:
