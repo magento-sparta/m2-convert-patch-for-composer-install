@@ -147,9 +147,9 @@ HELP_TEXT;
                     if ($this->shouldSkipConversion($type, $matches)) {
                         return $matches[0];
                     }
-                    return $matches[1] . $this->composerPath[$type]
-                        . ($needProcess ? $this->camelCaseToDashedString($matches[2]) : $matches[2])
-                        . $matches[3] . $this->composerPath[$type]
+                    return $matches[1] . ($matches[2] ? $this->composerPath[$type]: rtrim($this->composerPath[$type], "-"))
+                        . ($needProcess ? $this->camelCaseToDashedString($matches[2]): $matches[2])
+                        . $matches[3] . ($matches[2] ? $this->composerPath[$type]: rtrim($this->composerPath[$type], "-"))
                         . ($needProcess ? $this->camelCaseToDashedString($matches[4]) : $matches[4])
                         . $matches[5];
                 },
@@ -166,6 +166,19 @@ HELP_TEXT;
                     }
                     return $matches[1] . $this->composerPath[$type]
                         . ($needProcess ? $this->camelCaseToDashedString($matches[2]) : $matches[2]);
+                },
+                $content
+            );
+
+            // (  1 )                 (    2   )
+            // +++ b/Inventory
+            $content = preg_replace_callback(
+                '~(^(?:---|\+\+\+|Index:)\s+(?:a\/|b\/)?)' . $escapedPath . '~m',
+                function ($matches) use ($type, $needProcess) {
+                    if ($this->shouldSkipConversion($type, $matches)) {
+                        return $matches[0];
+                    }
+                    return $matches[1] . (rtrim($this->composerPath[$type], "-"));
                 },
                 $content
             );
