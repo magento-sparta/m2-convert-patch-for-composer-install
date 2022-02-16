@@ -10,6 +10,9 @@ class Converter
 {
     const MODULE                = 'Module';
     const INVENTORY             = 'Inventory';
+    const RECAPTCHA             = 'ReCaptcha';
+    const TWOFACTOR             = 'TwoFactor';
+    const SECURITYTXT           = 'Securitytxt';
     const ADMINHTML_DESIGN      = 'AdminhtmlDesign';
     const FRONTEND_DESIGN       = 'FrontendDesign';
     const LIBRARY_AMQP          = 'LibraryAmqp';
@@ -21,6 +24,9 @@ class Converter
     protected $nonComposerPath  = [
         self::MODULE                => 'app/code/Magento/',
         self::INVENTORY             => 'Inventory',
+        self::RECAPTCHA             => 'ReCaptcha',
+        self::TWOFACTOR             => 'TwoFactor',
+        self::SECURITYTXT           => 'Securitytxt',
         self::ADMINHTML_DESIGN      => 'app/design/adminhtml/Magento/',
         self::FRONTEND_DESIGN       => 'app/design/frontend/Magento/',
         self::LIBRARY_AMQP          => 'lib/internal/Magento/Framework/Amqp/',
@@ -32,6 +38,9 @@ class Converter
     protected $composerPath     = [
         self::MODULE                => 'vendor/magento/module-',
         self::INVENTORY             => 'vendor/magento/module-inventory-',
+        self::RECAPTCHA             => 'vendor/magento/module-re-captcha-',
+        self::TWOFACTOR             => 'vendor/magento/module-two-factor-',
+        self::SECURITYTXT           => 'vendor/magento/module-securitytxt-',
         self::ADMINHTML_DESIGN      => 'vendor/magento/theme-adminhtml-',
         self::FRONTEND_DESIGN       => 'vendor/magento/theme-frontend-',
         self::LIBRARY_AMQP          => 'vendor/magento/framework-amqp/',
@@ -131,7 +140,7 @@ HELP_TEXT;
     {
         foreach ($this->nonComposerPath as $type => $path) {
             $escapedPath = addcslashes($path, '/');
-            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
+            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::RECAPTCHA, self::TWOFACTOR, self::SECURITYTXT, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
 
             /**
              * Example:
@@ -170,8 +179,8 @@ HELP_TEXT;
                 $content
             );
 
-            // (  1 )                 (    2   )
-            // +++ b/Inventory
+            // (  1 )(    2   )
+            // +++ b/SomeModule
             $content = preg_replace_callback(
                 '~(^(?:---|\+\+\+|Index:)\s+(?:a\/|b\/)?)' . $escapedPath . '~m',
                 function ($matches) use ($type, $needProcess) {
