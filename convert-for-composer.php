@@ -140,7 +140,7 @@ HELP_TEXT;
     {
         foreach ($this->nonComposerPath as $type => $path) {
             $escapedPath = addcslashes($path, '/');
-            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::RECAPTCHA, self::TWOFACTOR, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
+            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::RECAPTCHA, self::TWOFACTOR, self::SECURITYTXT, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
 
             /**
              * Example:
