@@ -2,7 +2,6 @@
 <?php
 
 /**
- * Compatibility confirmed for Magento <= 2.2.4
  *
  * Class Converter
  */
@@ -13,6 +12,8 @@ class Converter
     const RECAPTCHA             = 'ReCaptcha';
     const TWOFACTOR             = 'TwoFactor';
     const SECURITYTXT           = 'Securitytxt';
+    const BRAINTREE_CORE        = 'Braintree/';
+    const BRAINTREE             = 'Braintree';
     const ADMINHTML_DESIGN      = 'AdminhtmlDesign';
     const FRONTEND_DESIGN       = 'FrontendDesign';
     const LIBRARY_AMQP          = 'LibraryAmqp';
@@ -27,6 +28,8 @@ class Converter
         self::RECAPTCHA             => 'ReCaptcha',
         self::TWOFACTOR             => 'TwoFactor',
         self::SECURITYTXT           => 'Securitytxt',
+        self::BRAINTREE_CORE        => 'Braintree/',
+        self::BRAINTREE             => 'Braintree',
         self::ADMINHTML_DESIGN      => 'app/design/adminhtml/Magento/',
         self::FRONTEND_DESIGN       => 'app/design/frontend/Magento/',
         self::LIBRARY_AMQP          => 'lib/internal/Magento/Framework/Amqp/',
@@ -41,6 +44,8 @@ class Converter
         self::RECAPTCHA             => 'vendor/magento/module-re-captcha-',
         self::TWOFACTOR             => 'vendor/magento/module-two-factor-',
         self::SECURITYTXT           => 'vendor/magento/module-securitytxt-',
+        self::BRAINTREE_CORE        => 'vendor/paypal/module-braintree-core/',
+        self::BRAINTREE             => 'vendor/paypal/module-braintree-',
         self::ADMINHTML_DESIGN      => 'vendor/magento/theme-adminhtml-',
         self::FRONTEND_DESIGN       => 'vendor/magento/theme-frontend-',
         self::LIBRARY_AMQP          => 'vendor/magento/framework-amqp/',
@@ -140,7 +145,7 @@ HELP_TEXT;
     {
         foreach ($this->nonComposerPath as $type => $path) {
             $escapedPath = addcslashes($path, '/');
-            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::RECAPTCHA, self::TWOFACTOR, self::SECURITYTXT, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
+            $needProcess = in_array($type, [self::MODULE, self::INVENTORY, self::RECAPTCHA, self::TWOFACTOR, self::SECURITYTXT, self:: BRAINTREE, self::ADMINHTML_DESIGN, self::FRONTEND_DESIGN]);
 
             /**
              * Example:
