@@ -119,7 +119,8 @@ HELP_TEXT;
 
     protected function checkForRenaming($filename)
     {
-        if(strpos(file_get_contents($filename),'rename from') && strpos(file_get_contents($filename),'rename to')) {
+        $content = file_get_contents($filename);
+        if (strpos($content, 'rename from') && strpos($content, 'rename to')) {
             printf("Warning! File contains renaming. Please try to recreate it using the following command:\ngit diff -M90%% commit1 commit2 > test.patch \n");
             fputs(STDERR, "\033[31m Warning! File $filename contains renaming - please try to recreate it using the following command:\n\n git diff -M90% commit1 commit2 > test.patch\n");
             exit(3);
