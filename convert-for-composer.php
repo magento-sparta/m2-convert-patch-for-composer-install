@@ -65,6 +65,7 @@ class Converter
     {
         $filename = $this->parseArgs($params);
         $this->validateFile($filename);
+        $this->checkForRenaming($filename);
         $this->convert($filename);
     }
 
@@ -105,12 +106,24 @@ HELP_TEXT;
     {
         if (!file_exists($filename) || is_dir($filename)) {
             printf("Error! File %s does not exist.\n", $filename);
+            fputs(STDERR, "\033[31m --- Error! File $filename does not exist. --- \n");
             exit(1);
         }
 
         if (!is_readable($filename)) {
             printf("Error! Can not read file %s.\n", $filename);
+            fputs(STDERR, "\033[31m --- Error! Can not read file $filename. --- \n");
             exit(2);
+        }
+    }
+
+    protected function checkForRenaming($filename)
+    {
+        $content = file_get_contents($filename);
+        if (strpos($content, 'rename from') && strpos($content, 'rename to')) {
+            printf("Warning! File contains renaming. Please try to recreate it using the following command:\ngit diff -M90%% commit1 commit2 > test.patch \n");
+            fputs(STDERR, "\033[31m Warning! File $filename contains renaming - please try to recreate it using the following command:\n\n git diff -M90% commit1 commit2 > test.patch\n");
+            exit(3);
         }
     }
 
