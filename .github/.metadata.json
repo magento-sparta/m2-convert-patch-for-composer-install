@@ -1,0 +1,25 @@
+{
+    "templateVersion": "0.2",
+    "product": {
+        "name": "Magento 2: Patch converter for code which was installed from composer",
+        "description": "Generates composer patch for Magento 2 installations",
+    },
+    "contacts": {
+        "team": {
+            "name": "Adobe Commerce Support Developers",
+            "DL": "Grp-Magento-Support-Engineering",
+            "slackChannel": "#support-engineering"
+        }
+    },
+    "ticketTracker": {
+        "functionalJiraQueue": {
+            "projectKey": "ACSD",
+            "component": ""
+        },
+        "securityJiraQueue": {
+            "projectKey": "ACSD",
+            "component": "ACSD"
+        }
+    },
+    "productionCodeBranches": ["master"]
+}
