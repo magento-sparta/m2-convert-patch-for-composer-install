@@ -29,3 +29,14 @@ Usage: php -f converter-for-composer.php [options] file [> new-file]
     -h, --help  Show help
     -r          Reverse mode. Convert composer format back to git
 ```
+
+## Tests
+To run tests:
+* Install phpunit
+```
+composer install
+```
+* Run tests
+```
+./vendor/bin/phpunit tests
+```
