@@ -1,0 +1,124 @@
+diff --git a/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdate.php b/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdate.php
+index 0cb0bb769..ea719d137 100644
+--- a/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdate.php
++++ b/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdate.php
+@@ -82,8 +82,14 @@ public function partialReindex(
+         DataSerializerInterface $serializer,
+         EntityIdsProviderInterface $idsProvider,
+         array $ids = [],
+-        callable $callback = null
++        callable $callback = null,
++        &$newFeedItemsData = null
+     ): void {
++        $isPartialReindex = $newFeedItemsData === null;
++        if ($isPartialReindex) {
++            $newFeedItemsData = [];
++        }
++
+         $feedIdentity = $metadata->getFeedIdentity();
+         $arguments = [];
+         foreach ($idsProvider->getAffectedIds($metadata, $ids) as $id) {
+@@ -99,7 +105,8 @@ public function partialReindex(
+                     $metadata,
+                     $serializer,
+                     $chunk,
+-                    &$processedHashes
++                    &$processedHashes,
++                    &$newFeedItemsData
+                 ) {
+                     //for backward compatibility:
+                     //allows to execute plugins on Process method when callbacks are in place
+@@ -110,11 +117,13 @@ public function partialReindex(
+                     if (empty($data)) {
+                         return;
+                     }
+-                    $exportStatus = $this->exportFeedProcessor->export(
+-                        array_column($data, 'feed'),
+-                        $metadata
+-                    );
+-                    $this->feedUpdater->execute($data, $exportStatus, $metadata, $serializer);
++                    $newFeedItemsData += $data;
++
++                    if (count($newFeedItemsData) < $metadata->getBatchSize()) {
++                        return ;
++                    }
++                    $this->exportFeedItemsAndLogStatus($newFeedItemsData, $metadata, $serializer);
++                    $newFeedItemsData = [];
+                 };
+                 $this->exportProcessor->processWithCallback($metadata, $chunk, $dataProcessorCallback);
+ 
+@@ -134,6 +143,10 @@ public function partialReindex(
+                 );
+             }
+         }
++
++        if ($isPartialReindex) {
++            $this->exportFeedItemsAndLogStatus($newFeedItemsData, $metadata, $serializer);
++        }
+     }
+ 
+     /**
+@@ -150,10 +163,16 @@ public function fullReindex(
+     ): void {
+         try {
+             $this->truncateIndexTable($metadata);
++            $newFeedItemsData = [];
+             foreach ($idsProvider->getAllIds($metadata) as $batch) {
+                 $ids = \array_column($batch, $metadata->getFeedIdentity());
+-                $this->partialReindex($metadata, $serializer, $idsProvider, $ids);
++                $this->partialReindex($metadata, $serializer, $idsProvider, $ids, null, $newFeedItemsData);
+             }
++
++            if ($newFeedItemsData) {
++                $this->exportFeedItemsAndLogStatus($newFeedItemsData, $metadata, $serializer);
++            }
++
+         } catch (\Throwable $e) {
+             $this->logger->error(
+                 'Data Exporter exception has occurred: ' . $e->getMessage(),
+@@ -162,6 +181,15 @@ public function fullReindex(
+         }
+     }
+ 
++    private function exportFeedItemsAndLogStatus(array $data, FeedIndexMetadata $metadata, DataSerializerInterface $serializer)
++    {
++        $exportStatus = $this->exportFeedProcessor->export(
++            array_column($data, 'feed'),
++            $metadata
++        );
++        $this->feedUpdater->execute($data, $exportStatus, $metadata, $serializer);
++
++    }
+     /**
+      * Truncates index table
+      *
+@@ -328,11 +356,7 @@ public function handleDeletedItems(
+             if (empty($data)) {
+                 continue;
+             }
+-            $exportStatus = $this->exportFeedProcessor->export(
+-                array_column($data, 'feed'),
+-                $metadata
+-            );
+-            $this->feedUpdater->execute($data, $exportStatus, $metadata, $serializer);
++            $this->exportFeedItemsAndLogStatus($data, $metadata, $serializer);
+         }
+     }
+ }
+diff --git a/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdateDelete.php b/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdateDelete.php
+index ae6a10612..97e2cd088 100644
+--- a/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdateDelete.php
++++ b/DataExporter/Model/Indexer/FeedIndexProcessorCreateUpdateDelete.php
+@@ -75,9 +75,10 @@ public function partialReindex(
+         DataSerializerInterface $serializer,
+         EntityIdsProviderInterface $idsProvider,
+         array $ids = [],
+-        callable $callback = null
++        callable $callback = null,
++        &$newFeedItemsData = null
+     ): void {
+-        parent::partialReindex($metadata, $serializer, $idsProvider, $ids, $callback);
++        parent::partialReindex($metadata, $serializer, $idsProvider, $ids, $callback, $newFeedItemsData);
+         if (!$metadata->isExportImmediately()) {
+             try {
+                 $this->markRemovedEntities->execute($ids, $metadata);

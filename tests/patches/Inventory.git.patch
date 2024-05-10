@@ -1,0 +1,4 @@
+diff --git a/Inventory/Model/SourceItem/Validator/SkuValidator.php b/Inventory/Model/SourceItem/Validator/SkuValidator.php
+index 617da01138f..e085a6a6c90 100644
+--- a/Inventory/Model/SourceItem/Validator/SkuValidator.php
++++ b/Inventory/Model/SourceItem/Validator/SkuValidator.php
