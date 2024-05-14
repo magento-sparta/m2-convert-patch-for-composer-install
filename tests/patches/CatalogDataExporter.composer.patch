@@ -1,0 +1,66 @@
+diff --git a/vendor/magento/module-catalog-data-exporter/Model/Provider/Product/Formatter/DescriptionFormatter.php b/vendor/magento/module-catalog-data-exporter/Model/Provider/Product/Formatter/DescriptionFormatter.php
+index d42ef2bcd..021d1b9c2 100644
+--- a/vendor/magento/module-catalog-data-exporter/Model/Provider/Product/Formatter/DescriptionFormatter.php
++++ b/vendor/magento/module-catalog-data-exporter/Model/Provider/Product/Formatter/DescriptionFormatter.php
+@@ -8,28 +8,26 @@
+ namespace Magento\CatalogDataExporter\Model\Provider\Product\Formatter;
+ 
+ use Magento\Catalog\Helper\Data;
++use Magento\Framework\App\State;
++use Magento\Framework\View\DesignInterface;
+ 
+ /**
+  * Parse tags for description field
+  */
+ class DescriptionFormatter implements FormatterInterface
+ {
+-    /**
+-     * @var array
+-     */
+-    private $attributes;
+-
+-    /**
+-     * @var Data
+-     */
+-    private $catalogHelper;
++    private array $attributes;
++    private Data $catalogHelper;
++    private State $state;
+ 
+     /**
+      * @param Data $catalogHelper
++     * @param State $state
+      * @param array $attributes
+      */
+     public function __construct(
+         Data $catalogHelper,
++        State $state,
+         array $attributes = [
+             'description',
+             'shortDescription'
+@@ -37,16 +35,24 @@ public function __construct(
+     ) {
+         $this->attributes = $attributes;
+         $this->catalogHelper = $catalogHelper;
++        $this->state = $state;
+     }
+ 
+     /**
+      * @inheritdoc
++     * @throws \Exception
+      */
+     public function format(array $row): array
+     {
+         foreach ($row as $attribute => &$value) {
+             if (!empty($value) && \in_array($attribute, $this->attributes, true)) {
+-                $value = $this->catalogHelper->getPageTemplateProcessor()->filter($value);
++                $value = $this->state->emulateAreaCode(
++                    DesignInterface::DEFAULT_AREA,
++                    function ($value) {
++                        return $this->catalogHelper->getPageTemplateProcessor()->filter($value);
++                    },
++                    [$value]
++                );
+             }
+         }
+ 

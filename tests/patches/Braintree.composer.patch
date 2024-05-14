@@ -1,0 +1,20 @@
+diff --git a/vendor/paypal/module-braintree-core/view/frontend/web/js/paypal/button.js b/vendor/paypal/module-braintree-core/view/frontend/web/js/paypal/button.js
+index 623f8a4..f74ab59 100644
+--- a/vendor/paypal/module-braintree-core/view/frontend/web/js/paypal/button.js
++++ b/vendor/paypal/module-braintree-core/view/frontend/web/js/paypal/button.js
+@@ -204,7 +204,14 @@ define(
+                         jQuery("#maincontent").trigger('processStop');
+                     },
+ 
+-                    onClick: function (data) {
++                    onClick: function (clickData) {
++                        if (currentElement.data('location') === 'productpage') {
++                            let form = $("#product_addtocart_form");
++                            if (!(form.validation() && form.validation('isValid'))) {
++                                return false;
++                            }
++                        }
++
+                         var cart = customerData.get('cart'),
+                             customer = customerData.get('customer'),
+                             declinePayment = false,

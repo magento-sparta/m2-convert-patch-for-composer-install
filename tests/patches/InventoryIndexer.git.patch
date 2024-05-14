@@ -1,0 +1,21 @@
+diff --git a/InventoryIndexer/Plugin/InventoryApi/ReindexAfterSourceItemsSavePlugin.php b/InventoryIndexer/Plugin/InventoryApi/ReindexAfterSourceItemsSavePlugin.php
+index 50be65d661e..b1796f6a1cb 100644
+--- a/InventoryIndexer/Plugin/InventoryApi/ReindexAfterSourceItemsSavePlugin.php
++++ b/InventoryIndexer/Plugin/InventoryApi/ReindexAfterSourceItemsSavePlugin.php
+@@ -7,14 +7,13 @@ declare(strict_types=1);
+
+ namespace Magento\InventoryIndexer\Plugin\InventoryApi;
+
++use Magento\Framework\Exception\LocalizedException;
+ use Magento\InventoryApi\Api\Data\SourceItemInterface;
+ use Magento\InventoryApi\Api\SourceItemsSaveInterface;
++use Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface;
+ use Magento\InventoryIndexer\Indexer\SourceItem\GetSourceItemIds;
+ use Magento\InventoryIndexer\Indexer\SourceItem\SourceItemIndexer;
+
+-/**
+- * Reindex after source items save plugin
+- */
+ class ReindexAfterSourceItemsSavePlugin
+ {
+     /**

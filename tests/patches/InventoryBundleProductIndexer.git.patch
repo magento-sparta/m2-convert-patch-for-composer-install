@@ -1,0 +1,5 @@
+diff --git a/InventoryBundleProductIndexer/Indexer/SourceItemIndexerProcessor.php b/InventoryBundleProductIndexer/Indexer/SourceItemIndexerProcessor.php
+new file mode 100644
+index 00000000000..60c038a118f
+--- /dev/null
++++ b/InventoryBundleProductIndexer/Indexer/SourceItemIndexerProcessor.php

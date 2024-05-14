@@ -1,0 +1,106 @@
+diff --git a/vendor/magento/module-live-search-Adapter/Model/QueryArgumentProcessor/FilterHandler/CategoryFilterHandler.php b/vendor/magento/module-live-search-Adapter/Model/QueryArgumentProcessor/FilterHandler/CategoryFilterHandler.php
+index 2aa707a6..ef46e316 100644
+--- a/vendor/magento/module-live-search-Adapter/Model/QueryArgumentProcessor/FilterHandler/CategoryFilterHandler.php
++++ b/vendor/magento/module-live-search-Adapter/Model/QueryArgumentProcessor/FilterHandler/CategoryFilterHandler.php
+@@ -92,27 +92,30 @@ public function getFilterVariables(): array
+             return [];
+         }
+         $categories = $this->getCategoryData($categoryIds);
+-        $allParentCategoryIds = array_column($categories, 'parent_id');
+-        $childCategoryIds = array_diff($categoryIds, $allParentCategoryIds);
+-        $requestParentCategoryIds = (count($categoryIds) === 1) ? $categoryIds :
+-            array_diff($categoryIds, $childCategoryIds);
+-        // if request is from category page
+-        if (count($requestParentCategoryIds) === 1 && $this->isRequestForCategoryPage()) {
+-            $childCategoryPaths = [];
+-            $filterVariables = [];
+-            foreach ($categories as $category) {
+-                if ($category['entity_id'] === $requestParentCategoryIds[0]) {
+-                    $filterVariables[] = ['attribute' => 'categoryPath', 'eq' => $category['path']];
+-                } else {
+-                    $childCategoryPaths[] = $category['path'];
++
++        if ($this->isRequestForCategoryPage()) {
++            $categoriesAtTopMostLevel = $this->getCategoriesAtTopMostLevel($categories);
++            $categoriesAtTopMostLevel = array_values($categoriesAtTopMostLevel);
++
++            if (count($categoriesAtTopMostLevel) === 1) {
++                $topMostCategory = $categoriesAtTopMostLevel[0];
++                $subCategories = $this->getSubCategories($topMostCategory, $categories);
++
++                // if all the remaining categories in filter are subcategories of the top most category
++                // then it is a valid browse request
++                $isValidBrowseRequest = count($subCategories) === count($categories) - 1;
++
++                if ($isValidBrowseRequest) {
++                    $childCategoryPaths = array_column($subCategories, 'path');
++                    $filterVariables[] = ['attribute' => 'categoryPath', 'eq' => $topMostCategory['path']];
++                    if (count($childCategoryPaths) > 0) {
++                        $filterVariables[] = [
++                            'attribute' => $this->getFilterKey(), $this->getFilterType() => $childCategoryPaths
++                        ];
++                    }
++                    return $filterVariables;
+                 }
+             }
+-            if (count($childCategoryPaths) > 0) {
+-                $filterVariables[] = [
+-                    'attribute' => $this->getFilterKey(), $this->getFilterType() => $childCategoryPaths
+-                ];
+-            }
+-            return $filterVariables;
+         }
+ 
+         return [
+@@ -123,6 +126,40 @@ public function getFilterVariables(): array
+         ];
+     }
+ 
++    /**
++     * Get categories at top most level
++     *
++     * @param array $categories
++     * @return array
++     */
++    private function getCategoriesAtTopMostLevel(array $categories): array
++    {
++        $levels = array_column($categories, 'level');
++        $topMostLevel = min($levels);
++        return array_filter($categories, function ($category) use ($topMostLevel) {
++            return $category['level'] === $topMostLevel;
++        });
++    }
++
++    /**
++     * Get sub categories of $topMostCategory
++     *
++     * @param array $topMostCategory
++     * @param array $categories
++     * @return array
++     */
++    private function getSubCategories(array $topMostCategory, array $categories): array
++    {
++        $subCategories = [];
++        foreach ($categories as $category) {
++            if ($category['entity_id'] !== $topMostCategory['entity_id'] &&
++                str_contains($category['id_path'], $topMostCategory['id_path'])) {
++                $subCategories[] = $category;
++            }
++        }
++        return $subCategories;
++    }
++
+     /**
+      * Is request for category page
+      *
+@@ -171,7 +208,9 @@ private function getCategoryData(array $ids): array
+                 $categoryData = [
+                     'entity_id' => $categoryId,
+                     'parent_id' => $category->getParentId(),
+-                    'path' => $category->getUrlPath()
++                    'id_path' => $category->getPath(),
++                    'path' => $category->getUrlPath(),
++                    'level' => (int) $category->getLevel(),
+                 ];
+                 $key = $categoryData['entity_id'] . '_' . $storeId;
+                 $this->categoryCache->save($key, $categoryData);

@@ -1,0 +1,6 @@
+diff --git a/vendor/magento/module-inventory-bundle-product-indexer/Indexer/SourceItemIndexerProcessor.php b/vendor/magento/module-inventory-bundle-product-indexer/Indexer/SourceItemIndexerProcessor.php
+new file mode 100644
+index 00000000000..60c038a118f
+--- /dev/null
++++ b/vendor/magento/module-inventory-bundle-product-indexer/Indexer/SourceItemIndexerProcessor.php
+@@ -0,0 +1,70 @@

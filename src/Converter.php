@@ -12,6 +12,8 @@ class Converter
     const BRAINTREE_CORE = 'Braintree/';
     const BRAINTREE = 'Braintree';
     const LIVESEARCH = 'LiveSearch';
+    const DATA_EXPORTER = 'DataExporter';
+    const CATALOG_DATA_EXPORTER = 'CatalogDataExporter';
     const ADMINHTML_DESIGN = 'AdminhtmlDesign';
     const FRONTEND_DESIGN = 'FrontendDesign';
     const LIBRARY_AMQP = 'LibraryAmqp';
@@ -32,6 +34,8 @@ class Converter
         self::BRAINTREE_CORE => 'Braintree/',
         self::BRAINTREE => 'Braintree',
         self::LIVESEARCH => 'LiveSearch',
+        self::DATA_EXPORTER => 'DataExporter',
+        self::CATALOG_DATA_EXPORTER => 'CatalogDataExporter',
         self::ADMINHTML_DESIGN => 'app/design/adminhtml/Magento/',
         self::FRONTEND_DESIGN => 'app/design/frontend/Magento/',
         self::LIBRARY_AMQP => 'lib/internal/Magento/Framework/Amqp/',
@@ -49,6 +53,8 @@ class Converter
         self::BRAINTREE_CORE => 'vendor/paypal/module-braintree-core/',
         self::BRAINTREE => 'vendor/paypal/module-braintree-',
         self::LIVESEARCH => 'vendor/magento/module-live-search-',
+        self::DATA_EXPORTER => 'vendor/magento/module-data-exporter',
+        self::CATALOG_DATA_EXPORTER => 'vendor/magento/module-catalog-data-exporter',
         self::ADMINHTML_DESIGN => 'vendor/magento/theme-adminhtml-',
         self::FRONTEND_DESIGN => 'vendor/magento/theme-frontend-',
         self::LIBRARY_AMQP => 'vendor/magento/framework-amqp/',
