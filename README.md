@@ -20,8 +20,8 @@ chmod +x ~/bin/m2-convert-for-composer
 
 ## Usage
 ```
-Usage: php -f converter-for-composer.php [options] file [> new-file]
-    converter-for-composer.php [options] file [> new-file]
+Usage: php -f convert-for-composer.php [options] file [> new-file]
+    convert-for-composer.php [options] file [> new-file]
 
     file        path to source PATCH file
 
